@@ -1,10 +1,13 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  const web3CXITokenAddress = "0x6c5889875bFfa537F8c9bFD6e38161dc33AdD63f";
-  const web3CXI = await ethers.getContractAt("IERC20", web3CXITokenAddress);
+  const SuperFrankyTokenAddress = "0x4c9B6c64664314D18C2cD05bF3FE31534c705C99";
+  const SuperFranky = await ethers.getContractAt(
+    "IERC20",
+    SuperFrankyTokenAddress
+  );
 
-  const saveERC20ContractAddress = "0x5E539d20AE218aAdEa7E0A7C54d28b59D60c5D5f";
+  const saveERC20ContractAddress = "0xA05C36ba45751fd21F9eB70100fFFb8f70031506";
   const saveERC20 = await ethers.getContractAt(
     "ISaveERC20",
     saveERC20ContractAddress
@@ -13,7 +16,7 @@ async function main() {
   // Approve savings contract to spend token
   const approvalAmount = ethers.parseUnits("1000", 18);
 
-  const approveTx = await web3CXI.approve(saveERC20, approvalAmount);
+  const approveTx = await SuperFranky.approve(saveERC20, approvalAmount);
   approveTx.wait();
 
   const contractBalanceBeforeDeposit = await saveERC20.getContractBalance();
