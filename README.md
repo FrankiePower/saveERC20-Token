@@ -17,13 +17,3 @@ Deployed SaveERC20 - 0xA05C36ba45751fd21F9eB70100fFFb8f70031506
 # Verifying deployed contracts
 
 - https://sepolia-blockscout.lisk.com//address/0xA05C36ba45751fd21F9eB70100fFFb8f70031506#code
-
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat ignition deploy ./ignition/modules/Lock.ts
-```
