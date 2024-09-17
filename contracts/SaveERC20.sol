@@ -4,6 +4,8 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 
 contract SaveERC20 {
+    
+    // Custom Errors
     error AddressZeroDetected();
     error ZeroValueNotAllowed();
     error CantSendToZeroAddress();
