@@ -4,25 +4,23 @@ import hre, { ethers } from "hardhat";
 
 describe("SaveERC20", function () {
   // We define a fixture to reuse the same setup in every test.
-  // We use loadFixture to run this setup once, snapshot that state,
-  // and reset Hardhat Network to that snapshot in every test.
+
   async function deployToken() {
     // Contracts are deployed using the first signer/account by default
     const [owner, otherAccount] = await hre.ethers.getSigners();
 
-    const erc20Token = await hre.ethers.getContractFactory("Web3CXI");
+    const erc20Token = await hre.ethers.getContractFactory("SuperFranky");
+
     const token = await erc20Token.deploy();
 
-    return { token };
+    return { token, owner, otherAccount };
   }
 
   async function deploySaveERC20() {
-    // Contracts are deployed using the first signer/account by default
-    const [owner, otherAccount] = await hre.ethers.getSigners();
-
-    const { token } = await loadFixture(deployToken);
+    const { token, owner, otherAccount } = await loadFixture(deployToken);
 
     const saveERC20 = await hre.ethers.getContractFactory("SaveERC20");
+
     const saveErc20 = await saveERC20.deploy(token);
 
     return { saveErc20, owner, otherAccount, token };
@@ -36,7 +34,7 @@ describe("SaveERC20", function () {
     });
 
     it("Should check if tokenAddress is correctly set", async function () {
-      const { saveErc20, owner, token } = await loadFixture(deploySaveERC20);
+      const { saveErc20, token } = await loadFixture(deploySaveERC20);
 
       expect(await saveErc20.tokenAddress()).to.equal(token);
     });
@@ -44,13 +42,14 @@ describe("SaveERC20", function () {
 
   describe("Deposit", function () {
     it("Should deposit successfully", async function () {
-      const { saveErc20, owner, otherAccount, token } = await loadFixture(
+      const { saveErc20, otherAccount, token } = await loadFixture(
         deploySaveERC20
       );
 
-      // Transfer erc20 tokens from the owner to otherAccount
+      // Transfer ERC20 tokens from the owner to otherAccount
       const trfAmount = ethers.parseUnits("100", 18);
       await token.transfer(otherAccount, trfAmount);
+
       expect(await token.balanceOf(otherAccount)).to.equal(trfAmount);
 
       // using otherAccount to approve the SaveErc20 contract to spend token
@@ -104,7 +103,7 @@ describe("SaveERC20", function () {
   });
 
   describe("Withdraw", function () {
-    it("Should deposit successfully", async function () {
+    it("Should withdraw successfully", async function () {
       const { saveErc20, owner, otherAccount, token } = await loadFixture(
         deploySaveERC20
       );
@@ -138,8 +137,6 @@ describe("SaveERC20", function () {
       const withdrawAmount = ethers.parseUnits("5", 18);
 
       await saveErc20.connect(otherAccount).withdraw(withdrawAmount);
-
-      const balAfterWithdrawal = await token.balanceOf(otherAccount);
 
       expect(await saveErc20.getContractBalance()).to.equal(
         depositAmount - withdrawAmount
